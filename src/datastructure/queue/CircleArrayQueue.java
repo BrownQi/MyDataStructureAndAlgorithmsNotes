@@ -67,7 +67,7 @@ class CircleArray {
     private int[] arr;//用于存放数据，模拟队列
 
     public CircleArray(int arrMaxSize) {
-        maxSize = arrMaxSize + 1;
+        maxSize = arrMaxSize + 1;//因为队列的实际长度为数组长度-1
         arr = new int[maxSize];
     }
 
