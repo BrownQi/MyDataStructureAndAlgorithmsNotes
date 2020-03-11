@@ -14,7 +14,7 @@ public class CircleArrayQueue {
         Scanner scanner = new Scanner(System.in);
         boolean loop = true;
         //输出一个菜单
-        while(loop){
+        while (loop) {
             System.out.println("测试数组模拟环形队列：");
             System.out.println("s(show):显示队列");
             System.out.println("e(exit):退出程序");
@@ -23,7 +23,7 @@ public class CircleArrayQueue {
             System.out.println("h(head):查看队列头部数据");
             key = scanner.next().charAt(0);
 
-            switch (key){
+            switch (key) {
                 case 's':
                     arrayQueue.showQueue();
                     break;
@@ -35,7 +35,7 @@ public class CircleArrayQueue {
                 case 'g':
                     try {
                         int res = arrayQueue.getQueue();
-                        System.out.printf("取出的数据是%d\n",res);
+                        System.out.printf("取出的数据是%d\n", res);
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
@@ -43,7 +43,7 @@ public class CircleArrayQueue {
                 case 'h':
                     try {
                         int res = arrayQueue.headQueue();
-                        System.out.printf("队列头部的数据是%d\n",res);
+                        System.out.printf("队列头部的数据是%d\n", res);
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
@@ -67,7 +67,7 @@ class CircleArray {
     private int[] arr;//用于存放数据，模拟队列
 
     public CircleArray(int arrMaxSize) {
-        maxSize = arrMaxSize;
+        maxSize = arrMaxSize + 1;
         arr = new int[maxSize];
     }
 
