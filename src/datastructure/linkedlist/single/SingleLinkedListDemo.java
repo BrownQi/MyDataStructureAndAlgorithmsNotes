@@ -1,5 +1,7 @@
 package datastructure.linkedlist.single;
 
+import java.util.Stack;
+
 /**
  * @Description:
  * @Author: BrownQi
@@ -61,18 +63,59 @@ public class SingleLinkedListDemo {
         }
         System.out.println("**************************");
 
-        list.del(1);
-        list.del(2);
-        list.del(3);
-        list.del(4);
-        list.del(5);
-        list.del(6);
-        list.del(7);
-        list.del(8);
-        list.del(9);
-        list.del(99);
+//        list.del(1);
+//        list.del(2);
+//        list.del(3);
+//        list.del(4);
+//        list.del(5);
+//        list.del(6);
+//        list.del(7);
+//        list.del(8);
+//        list.del(9);
+//        list.del(99);
+
+        SingleLinkedList.reverseList(list.getHead());
 
         list.showList();
+
+        System.out.println(SingleLinkedList.getLength(list.getHead()));
+
+        System.out.println(SingleLinkedList.findLastIndex(list.getHead(), 18));
+
+        SingleLinkedList.showRerverseList(list.getHead());
+
+        System.out.println("merge*********************************");
+        PokemonNode n1 = new PokemonNode(1, "妙蛙种子");
+        PokemonNode n3 = new PokemonNode(3, "妙蛙花");
+        PokemonNode n4 = new PokemonNode(4, "小火龙");
+        PokemonNode n5 = new PokemonNode(5, "火恐龙");
+        PokemonNode n7 = new PokemonNode(7, "杰尼龟");
+        PokemonNode n9 = new PokemonNode(9, "水箭龟");
+
+        PokemonNode n2 = new PokemonNode(2, "妙蛙草");
+        PokemonNode n6 = new PokemonNode(6, "喷火龙");
+        PokemonNode n8 = new PokemonNode(8, "卡咪龟");
+
+        SingleLinkedList list2 = new SingleLinkedList();
+        list2.addOrderByNo(n1);
+        list2.addOrderByNo(n3);
+        list2.addOrderByNo(n4);
+        list2.addOrderByNo(n5);
+        list2.addOrderByNo(n7);
+        list2.addOrderByNo(n9);
+
+        SingleLinkedList list3 = new SingleLinkedList();
+        list3.addOrderByNo(n2);
+        list3.addOrderByNo(n6);
+        list3.addOrderByNo(n8);
+
+        PokemonNode newHead = SingleLinkedList.mergeTwoList(list2.getHead(), list3.getHead());
+        PokemonNode temp = newHead.next;
+        while (temp != null) {
+            System.out.println(temp);
+            temp = temp.next;
+        }
+
 
     }
 }
@@ -81,6 +124,10 @@ public class SingleLinkedListDemo {
 class SingleLinkedList {
     //先初始化一个头节点，头节点不可改动,不存放具体的数据
     private PokemonNode head = new PokemonNode(0, "");
+
+    public PokemonNode getHead() {
+        return head;
+    }
 
     //添加节点到单向链表（第一种）
     //思路：当不考虑编号顺序时
@@ -133,11 +180,11 @@ class SingleLinkedList {
         }
         //修改原有节点值
         PokemonNode temp = head.next;
-        while (true){
-            if (temp == null){
-                System.err.printf("未找到No%d，无法修改。\n",newPokemonNode.no);
+        while (true) {
+            if (temp == null) {
+                System.err.printf("未找到No%d，无法修改。\n", newPokemonNode.no);
                 return;
-            }else if (temp.no == newPokemonNode.no){
+            } else if (temp.no == newPokemonNode.no) {
                 temp.name = newPokemonNode.name;
                 return;
             }
@@ -158,10 +205,10 @@ class SingleLinkedList {
     }
 
     //删除节点
-    public void del(int no){
+    public void del(int no) {
         PokemonNode temp = head;
-        while (temp.next!=null){
-            if (temp.next.no == no){
+        while (temp.next != null) {
+            if (temp.next.no == no) {
                 temp.next = temp.next.next;
                 return;
             }
@@ -186,6 +233,135 @@ class SingleLinkedList {
             temp = temp.next;
         }
     }
+
+    /**
+     * @param head 链表的头节点
+     * @return 返回的是有效节点个数
+     * @description 求单链表中有效节点的个数(如果是带头节点的链表 ， 不计头节点)
+     */
+    public static int getLength(PokemonNode head) {
+        int length = 0;
+        //定义一个辅助变量
+        PokemonNode temp = head.next;
+        while (temp != null) {
+            length++;
+            temp = temp.next;
+        }
+        return length;
+    }
+
+    /**
+     * @param head
+     * @param index
+     * @return PokemonNode
+     * @description 查找单链表中的倒数第K个节点
+     * 1. 编写一个方法接收head节点，同时接收一个index
+     * 2. index 表示倒数第index个节点
+     * 3. 先把链表从头到尾遍历，得到链表的总长度 getLength
+     * 4. 得到size后，我们从链表的第一个开始遍历（size-index）个，就可以得到
+     * <p>
+     * 思路二：利用两个指针第一个指针先遍历链表，第二个指针在与第一个指针相差k-1时开始遍历
+     * 效率应该相差不大？都是遍历了2n-k+1次。（待验证）
+     */
+    public static PokemonNode findLastIndex(PokemonNode head, int index) {
+        //判断如果列表为空，返回null
+        if (head.next == null) {
+            return null;
+        }
+        //第一个遍历得到链表的长度（节点个数）
+        int size = getLength(head);
+        //第二次遍历 size-index 位置，就是我们倒数的第K个节点
+        //先做一个index的校验
+        if (index <= 0 || index > size) {
+            return null;
+        }
+        //定义辅助变量
+        PokemonNode temp = head.next;
+        for (int i = 0; i < size - index; i++) {
+            temp = temp.next;
+        }
+        return temp;
+    }
+
+
+    /**
+     * @param head 要反转的单链表的头节点
+     * @description 反转单链表
+     */
+    public static void reverseList(PokemonNode head) {
+        //如果当前链表为空，或者只有一个节点，无需反转，直接返回
+        if (head.next == null || head.next.next == null) {
+            return;
+        }
+
+        PokemonNode temp = head.next;
+        PokemonNode next = null;//指向当前节点[temp]的下一个节点
+        PokemonNode reverseHead = new PokemonNode(0, "");
+        //遍历原来的链表，每遍历一个节点就将其取出，并放在新得链表reverseHead的最前端
+        while (temp != null) {
+            next = temp.next;
+            temp.next = reverseHead.next;
+            reverseHead.next = temp;
+            temp = next;
+        }
+        head.next = reverseHead.next;
+    }
+
+    /**
+     * @param head
+     * @description 从尾到头打印单链表(利用栈 ， 不改变链表的结构)
+     */
+    public static void showRerverseList(PokemonNode head) {
+        if (head.next == null) {
+            return;
+        }
+        //创建一个栈，将各个节点压入栈中
+        Stack<PokemonNode> stack = new Stack<>();
+        PokemonNode temp = head.next;
+        //将链表的所有节点压入栈
+        while (temp != null) {
+            stack.add(temp);
+            temp = temp.next;
+        }
+        //将栈中的节点进行打印，pop出栈
+        while (stack.size() > 0) {
+            System.out.println(stack.pop());
+        }
+    }
+
+    /**
+     * @param head1 第一个单链表的头节点
+     * @param head2 第二个单链表的头节点
+     * @return 合并后的单链表的头节点
+     * @description 合并两个有序的单链表，合并之后的链表以然有序
+     */
+    public static PokemonNode mergeTwoList(PokemonNode head1, PokemonNode head2) {
+        PokemonNode newHead = new PokemonNode(0, "");
+        PokemonNode temp1 = head1.next;
+        PokemonNode temp2 = head2.next;
+        PokemonNode tempNew = newHead;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.no <= temp2.no) {
+                tempNew.next = temp1;
+                temp1 = temp1.next;
+            } else {
+                tempNew.next = temp2;
+                temp2 = temp2.next;
+            }
+            tempNew = tempNew.next;
+        }
+        while (temp1 != null) {
+            tempNew.next = temp1;
+            temp1 = temp1.next;
+        }
+        while (temp2 != null) {
+            tempNew.next = temp2;
+            temp2 = temp2.next;
+        }
+        return newHead;
+    }
+
+
 }
 
 //定义PokemonNode，每个PokemonNode对象就是一个节点
