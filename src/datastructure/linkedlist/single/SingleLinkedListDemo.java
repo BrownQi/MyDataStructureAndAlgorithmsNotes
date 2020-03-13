@@ -152,7 +152,6 @@ class SingleLinkedList {
         //因为头节点不能动，因此通过一个辅助变量来找到添加的位置
         //因为是单链表，我们找的temp是位于添加位置的前一个节点。否则插入不了
         PokemonNode temp = head;
-        boolean flag = false; //flag标志添加的编号是否存在，默认为false
         while (true) {
             if (temp.next == null) {
                 temp.next = pokemonNode;
