@@ -1,14 +1,18 @@
 package datastructure.stack;
 
 /**
- * @Description:
+ * @Description: 10以内加减乘除错误示例。（中缀）
+ * 分割表达式应该用正则
+ * 计算顺序有误，读取符号之后若其优先度小于或等于栈顶符号，进行数值操作后应依次比较，直至符号栈为空，再将其压入栈中
  * @Author: BrownQi
  * @date: 2020-03-16 23:26
  */
-public class Calculator {
+@Deprecated
+public class CalculatorWrongVersion {
     public static void main(String[] args) {
         //表达式
         String expression = "3+2*6-2";
+//        String expression = "3-2*6-2";//错误：因为计算顺序错误
 
         //创建两个栈，数栈、符号栈
         StackCal numStack = new StackCal(10);
@@ -37,15 +41,42 @@ public class Calculator {
                         num1 = numStack.pop();
                         num2 = numStack.pop();
                         oper = operStack.pop();
-                        res = numStack.cal(num1,num2,oper);
-                        //把结果入数栈
-
+                        res = numStack.cal(num1, num2, oper);
+                        //把结果压入数栈
+                        numStack.push(res);
+                        //把当前的操作符压入符号栈
+                        operStack.push(ch);
+                    } else {
+                        //如果当前的操作符的优先级大于栈中的操作符，直接压入符号栈
+                        operStack.push(ch);
                     }
                 } else {
                     //为空直接压入栈
+                    operStack.push(ch);
                 }
+            } else {
+                numStack.push(ch - 48);//ch是char型
+            }
+            //让index + 1，并判断是否扫描到expression最后。
+            index++;
+            if (index >= expression.length()) {
+                break;
             }
         }
+
+        //当表达式扫描完毕，就顺序的从数栈和符号栈中pop出响应的数和符号，并运行。
+        while (true){
+            //如果符号栈为空，则计算到最后的结果，数栈中只有一个数字（结果）
+            if (operStack.isEmpty()){
+                break;
+            }
+            num1 = numStack.pop();
+            num2 = numStack.pop();
+            oper = operStack.pop();
+            res = numStack.cal(num1,num2,oper);
+            numStack.push(res);
+        }
+        System.out.printf("%s = %d",expression,res);
     }
 }
 
