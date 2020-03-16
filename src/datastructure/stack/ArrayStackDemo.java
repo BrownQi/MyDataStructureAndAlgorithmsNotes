@@ -60,6 +60,14 @@ class ArrayStack {
     private int[] stack; //数组，模拟栈。数据就放在该数组
     private int top = -1; //top表示栈顶，初始化为-1
 
+    public int[] getStack() {
+        return stack;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
     public ArrayStack(int maxSize) {
         this.maxSize = maxSize;
         stack = new int[this.maxSize];
