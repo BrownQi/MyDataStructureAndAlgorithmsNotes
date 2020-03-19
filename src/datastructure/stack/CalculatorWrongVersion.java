@@ -11,8 +11,8 @@ package datastructure.stack;
 public class CalculatorWrongVersion {
     public static void main(String[] args) {
         //表达式
-        String expression = "3+2*6-2";
-//        String expression = "3-2*6-2";//错误：因为计算顺序错误
+//        String expression = "70+2*6";
+        String expression = "3-2*6-2";//错误：因为计算顺序错误
 
         //创建两个栈，数栈、符号栈
         StackCal numStack = new StackCal(10);
@@ -25,6 +25,7 @@ public class CalculatorWrongVersion {
         int oper = 0;
         int res = 0;
         char ch = ' ';//将每次扫描得到的char保存到ch
+        String keepNum ="";//用于拼接
 
         //开始while循环的扫描expression
         while (true) {
@@ -44,8 +45,14 @@ public class CalculatorWrongVersion {
                         res = numStack.cal(num1, num2, oper);
                         //把结果压入数栈
                         numStack.push(res);
-                        //把当前的操作符压入符号栈
-                        operStack.push(ch);
+
+                        if (operStack.isEmpty()){
+                            //把当前的操作符压入符号栈
+                            operStack.push(ch);
+                        }else{
+                            index--;
+                        }
+
                     } else {
                         //如果当前的操作符的优先级大于栈中的操作符，直接压入符号栈
                         operStack.push(ch);
@@ -55,7 +62,26 @@ public class CalculatorWrongVersion {
                     operStack.push(ch);
                 }
             } else {
-                numStack.push(ch - 48);//ch是char型
+//                numStack.push(ch - 48);//ch是char型
+//                分析思路
+                //1.当处理多位数时，不能发现是一个数就立即入栈，因为它可能是多位数
+                //2.在处理数，需要向expression的表达式的index后再看一位，如果是数就进行扫描，如果是符号才入栈
+                //3.因此需要定义一个变量字符串，用于拼接
+
+                //处理多位数
+                keepNum += ch;
+
+                //如果ch已经是expression的最后一位，就直接入栈
+                if (index == expression.length()-1){
+                    numStack.push(Integer.parseInt(keepNum));
+                }else{
+                    //判断下一个字符是不是数字,如果是数字,就唏嘘扫描,如果是迅速安抚,则入栈
+                    if (operStack.isOper(expression.substring(index+1,index+2).charAt(0))){
+                        //如果后一位是运算符，则入栈
+                        numStack.push(Integer.parseInt(keepNum));
+                        keepNum = "";
+                    }
+                }
             }
             //让index + 1，并判断是否扫描到expression最后。
             index++;
