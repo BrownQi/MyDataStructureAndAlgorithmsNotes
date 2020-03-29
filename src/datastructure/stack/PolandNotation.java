@@ -14,8 +14,8 @@ public class PolandNotation {
         String expression = "1+((2+3)*4)-5";
         List<String> strings = toInfixExpressionList(expression);
         System.out.println(strings);
-        List<String> strings1 = parseSuffixExpreesionList(strings);
-        System.out.println(parseSuffixExpreesionList(strings));
+        List<String> strings1 = parseSuffixExpresionList(strings);
+        System.out.println(parseSuffixExpresionList(strings));
 
         System.out.println(calculate(strings1));
 
@@ -40,7 +40,7 @@ public class PolandNotation {
 
     //demo v2
 
-    public static List<String> parseSuffixExpreesionList(List<String> ls){
+    public static List<String> parseSuffixExpresionList(List<String> ls) {
         //定义两个栈
         Stack<String> s1 = new Stack<>();//符号栈
         List<String> s2 = new ArrayList<>();//储存中间结果的Lists2
@@ -49,19 +49,19 @@ public class PolandNotation {
         for (String item :
                 ls) {
             //如果是一个数，入s2
-            if (item.matches("\\d+")){
+            if (item.matches("\\d+")) {
                 s2.add(item);
-            }else if (item.equals("(")){
+            } else if (item.equals("(")) {
                 s1.push(item);
-            }else if (item.equals(")")){
+            } else if (item.equals(")")) {
                 // 如果是右括号 ")" ，则依次弹出s1栈顶的运算符，并压入s2.直到遇到左括号为止，此时将这一对括号丢弃
-                while (!s1.peek().equals("(")){
+                while (!s1.peek().equals("(")) {
                     s2.add(s1.pop());
                 }
                 s1.pop();//将"("弹出s1栈
-            }else{
+            } else {
                 //当item的优先级小于或等于s1栈顶运算符的优先级，将s1栈顶的运算符弹出并压入到s2中，再次转到（4-1）与s1中新的栈顶运算符比较；
-                while (s1.size()!=0 && Operation.getValue(s1.peek())>=Operation.getValue(item)){
+                while (s1.size() != 0 && !s1.peek().equals("(") && Operation.getValue(s1.peek()) >= Operation.getValue(item)) {
                     s2.add(s1.pop());
                 }
                 //还需要将item压入栈
@@ -69,7 +69,7 @@ public class PolandNotation {
             }
         }
         //将s1中剩余的运算符依次弹出并加入到s2
-        while (s1.size()!=0){
+        while (s1.size() != 0) {
             s2.add(s1.pop());
         }
         return s2;//因为是存放到List
@@ -149,15 +149,15 @@ public class PolandNotation {
 }
 
 //编写一个类 Operation 可以返回一个运算符对应的优先级
-class Operation{
+class Operation {
     private static int ADD = 1;
     private static int SUB = 1;
     private static int MUL = 2;
     private static int DIV = 2;
 
-    public static int getValue(String operation){
+    public static int getValue(String operation) {
         int result = 0;
-        switch (operation){
+        switch (operation) {
             case "+":
                 result = ADD;
                 break;
